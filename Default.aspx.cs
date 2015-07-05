@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -24,6 +24,15 @@ public partial class _Default : System.Web.UI.Page {
             DateTime dt = TimeZoneInfo.ConvertTime(DateTime.Now,tzi);
 
             pom = HttpContext.Current.Request["pom"];
+            if (HttpContext.Current.Request.QueryString.AllKeys.Contains("delete")){
+                DeleteOldData();
+                Response.Write("Old data deleted");
+                Response.Flush();
+                Response.SuppressContent = true;
+                ApplicationInstance.CompleteRequest(); 
+                return;
+            }
+
             string hum = HttpContext.Current.Request["hum"];
             string temp = HttpContext.Current.Request["temp"];
             string dateTime = dt.ToString("yyyy-MM-dd HH:mm:ss");
@@ -45,7 +54,7 @@ public partial class _Default : System.Web.UI.Page {
                 restTime = string.Format("{0:00}45", dt.Hour);
             }
 
-            if (restTime == "0000") {
+            if (restTime == "0015") {
                 DeleteOldData();
             }
 
