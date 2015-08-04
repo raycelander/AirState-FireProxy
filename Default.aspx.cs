@@ -65,6 +65,7 @@ public partial class _Default : System.Web.UI.Page {
             string url = string.Format("https://airstate.firebaseio.com/measurements/{0}/{1}/{2}.json", pom, restDate, restTime);
             
             WebRequest fireBaseRequest = WebRequest.Create(url);
+            fireBaseRequest.Timeout = 30000;
             fireBaseRequest.Method = "PATCH";
             fireBaseRequest.ContentLength = json.Length;
             fireBaseRequest.ContentType = "application/x-www-form-urlencoded";
