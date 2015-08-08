@@ -35,6 +35,7 @@ public partial class _Default : System.Web.UI.Page {
 
             string hum = HttpContext.Current.Request["hum"];
             string temp = HttpContext.Current.Request["temp"];
+            string hpa = HttpContext.Current.Request["hpa"];
             string dateTime = dt.ToString("yyyy-MM-dd HH:mm:ss");
             string restDate = dt.ToString("yyyyMMdd");
             string restTime = "0000";
@@ -58,7 +59,7 @@ public partial class _Default : System.Web.UI.Page {
                 DeleteOldData();
             }
 
-            string json = string.Format("\"datetime\" : \"{0}\",\"temp\" : {1},\"hum\" : {2}", dt.ToString(), temp,  hum);
+            string json = string.Format("\"datetime\" : \"{0}\",\"temp\" : {1},\"hum\" : {2},\"hpa\" : {3}", dt.ToString(), temp, hum,hpa);
             json = "{" + json + "}";
             Encoding enc = Encoding.UTF8;
             byte[] jsonByteArray = enc.GetBytes(json);
