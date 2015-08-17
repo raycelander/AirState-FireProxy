@@ -25,12 +25,18 @@ public partial class _Default : System.Web.UI.Page {
 
             pom = HttpContext.Current.Request["pom"];
             if (HttpContext.Current.Request.QueryString.AllKeys.Contains("delete")){
-                DeleteOldData();
-                Response.Write("Old data deleted");
-                Response.Flush();
-                Response.SuppressContent = true;
-                ApplicationInstance.CompleteRequest(); 
-                return;
+                try {
+                    DeleteOldData(Convert.ToInt32(HttpContext.Current.Request["delete"]));
+                    Response.Write("Old data deleted");
+                    return;
+                } catch {
+                    Response.Write("No valid number given");
+                    return;
+                } finally {
+                    Response.Flush();
+                    Response.SuppressContent = true;
+                    ApplicationInstance.CompleteRequest();
+                }
             }
 
             string hum = HttpContext.Current.Request["hum"];
@@ -55,8 +61,8 @@ public partial class _Default : System.Web.UI.Page {
                 restTime = string.Format("{0:00}45", dt.Hour);
             }
 
-            if (restTime == "0015") {
-                DeleteOldData();
+            if (restTime.EndsWith("00")) {
+                DeleteOldData(2);
             }
 
             string json = string.Format("\"datetime\" : \"{0}\",\"temp\" : {1},\"hum\" : {2},\"hpa\" : {3}", dt.ToString(), temp, hum,hpa);
@@ -87,8 +93,8 @@ public partial class _Default : System.Web.UI.Page {
         }
     }
 
-    private void DeleteOldData() {
-        string toRestDate = DateTime.Now.AddDays(-2).ToString("yyyyMMdd");
+    private void DeleteOldData(int daysBack) {
+        string toRestDate = DateTime.Now.AddDays(-daysBack).ToString("yyyyMMdd");
         string url = string.Format("https://airstate.firebaseio.com/measurements/{0}.json?orderBy=\"$key\"&endAt=\"{1}\"", pom, toRestDate);
         WebRequest fireBaseRequest = WebRequest.Create(url);
         fireBaseRequest.Method = "GET";
